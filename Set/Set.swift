@@ -19,25 +19,26 @@ class Set {
     // Cards, that are currently selected
     var selectedCards = [Card]()
     
+    let handSize = 12
+    
     
     // MARK: methods
-    func selectCard(card : Card) {
-        selectedCards.append(card)
-        
-        if (selectedCards.count == 3) {
-            if ( match(set : selectedCards) ) {
-                for index in selectedCards.indices {
-                    hand.remove(at: index)
-                    selectedCards.remove(at: index)
-                }
-            } else {
-                selectedCards.removeAll()
-            }
+    func isCardSelected(at index : Int) -> Bool {
+        if (selectedCards.contains(hand[index])) {
+            return true
+        }
+        else {
+            return false
         }
     }
     
+    func selectCard(at index : Int) {
+        selectedCards.append(hand[index])
+    }
+        
     func deselectCard(at index: Int) {
-        selectedCards.remove(at: index)
+        // Force unwrap here ?!?!?!?
+        selectedCards.remove(at: selectedCards.firstIndex(of: hand[index])!)
     }
     
     func match(set : [Card]) -> Bool {
@@ -55,6 +56,9 @@ class Set {
                 }
         }
         return false
+        
+        // Пока в тестовом режиме всегда возвращаем true
+        //return true
     }
     
     func dealThreeMore() {
@@ -71,14 +75,14 @@ class Set {
             for symbol in symbols {
                 for shading in shadings {
                     for color in colors {
-                        deck.append(Card(numberOfShapes: number, cardSymbol: symbol, shapeShading: shading, cardColor: color))
+                        deck.append(Card(number: number, symbol: symbol, shading: shading, color: color))
                     }
                 }
             }
         }
         
         deck.shuffle()
-        for _ in 1...12 {
+        for _ in 1...handSize {
             hand.append(deck.remove(at: deck.endIndex-1))
         }
     }
