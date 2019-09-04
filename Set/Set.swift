@@ -19,7 +19,7 @@ class Set {
     // Cards, that are currently selected
     var selectedCards = [Card]()
     
-    let handSize = 12
+    let handSizeAtGameStart = 12
     
     
     // MARK: methods
@@ -35,36 +35,47 @@ class Set {
     func selectCard(at index : Int) {
         selectedCards.append(hand[index])
     }
-        
+    
     func deselectCard(at index: Int) {
         // Force unwrap here ?!?!?!?
         selectedCards.remove(at: selectedCards.firstIndex(of: hand[index])!)
     }
     
     func match(set : [Card]) -> Bool {
-            if ((selectedCards[1].color == selectedCards[2].color && selectedCards[2].color == selectedCards[0].color)
-                || (selectedCards[1].color != selectedCards[2].color && selectedCards[2].color != selectedCards[0].color && selectedCards[1].color != selectedCards[0].color)) {
-                if ((selectedCards[1].number == selectedCards[2].number && selectedCards[2].number == selectedCards[0].number)
-                    || (selectedCards[1].number != selectedCards[2].number && selectedCards[2].number != selectedCards[0].number && selectedCards[1].number != selectedCards[0].number)) {
-                    if ((selectedCards[1].shading == selectedCards[2].shading && selectedCards[2].shading == selectedCards[0].shading)
-                        || (selectedCards[1].shading != selectedCards[2].shading && selectedCards[2].shading != selectedCards[0].shading && selectedCards[1].shading != selectedCards[0].shading)) {
-                        if ((selectedCards[1].symbol == selectedCards[2].symbol && selectedCards[2].symbol == selectedCards[0].symbol)
-                            || (selectedCards[1].symbol != selectedCards[2].symbol && selectedCards[2].symbol != selectedCards[0].symbol && selectedCards[1].symbol != selectedCards[0].symbol)) {
-                            return true
-                        }
-                    }
-                }
-        }
-        return false
-        
-        // Пока в тестовом режиме всегда возвращаем true
-        //return true
+//                    if ((selectedCards[1].color == selectedCards[2].color && selectedCards[2].color == selectedCards[0].color)
+//                        || (selectedCards[1].color != selectedCards[2].color && selectedCards[2].color != selectedCards[0].color && selectedCards[1].color != selectedCards[0].color)) {
+//                        if ((selectedCards[1].number == selectedCards[2].number && selectedCards[2].number == selectedCards[0].number)
+//                            || (selectedCards[1].number != selectedCards[2].number && selectedCards[2].number != selectedCards[0].number && selectedCards[1].number != selectedCards[0].number)) {
+//                            if ((selectedCards[1].shading == selectedCards[2].shading && selectedCards[2].shading == selectedCards[0].shading)
+//                                || (selectedCards[1].shading != selectedCards[2].shading && selectedCards[2].shading != selectedCards[0].shading && selectedCards[1].shading != selectedCards[0].shading)) {
+//                                if ((selectedCards[1].symbol == selectedCards[2].symbol && selectedCards[2].symbol == selectedCards[0].symbol)
+//                                    || (selectedCards[1].symbol != selectedCards[2].symbol && selectedCards[2].symbol != selectedCards[0].symbol && selectedCards[1].symbol != selectedCards[0].symbol)) {
+                                    return true
+//                                }
+//                            }
+//                        }
+//                }
+//        return false
     }
     
     func dealThreeMore() {
         hand.append(deck.remove(at: deck.endIndex-1))
         hand.append(deck.remove(at: deck.endIndex-1))
         hand.append(deck.remove(at: deck.endIndex-1))
+    }
+    
+    func setMatched() {
+        
+        for index in hand.indices {
+            if hand.indices.contains(index) {
+                if isCardSelected(at: index) {
+                    hand.remove(at: index)
+                    if !deck.isEmpty {
+                        hand.insert(deck.remove(at: deck.endIndex-1), at: index)
+                    }
+                }
+            }
+        }
     }
     
     
@@ -82,7 +93,7 @@ class Set {
         }
         
         deck.shuffle()
-        for _ in 1...handSize {
+        for _ in 1...handSizeAtGameStart {
             hand.append(deck.remove(at: deck.endIndex-1))
         }
     }
