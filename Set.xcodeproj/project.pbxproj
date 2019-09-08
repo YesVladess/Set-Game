@@ -7,16 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A2688AC232467CD0031B917 /* CardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A2688AB232467CD0031B917 /* CardButton.swift */; };
 		5A68FB5F2317295700CDB8AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A68FB5E2317295700CDB8AE /* AppDelegate.swift */; };
 		5A68FB612317295700CDB8AE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A68FB602317295700CDB8AE /* ViewController.swift */; };
 		5A68FB642317295700CDB8AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A68FB622317295700CDB8AE /* Main.storyboard */; };
 		5A68FB662317295800CDB8AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A68FB652317295800CDB8AE /* Assets.xcassets */; };
 		5A68FB692317295800CDB8AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A68FB672317295800CDB8AE /* LaunchScreen.storyboard */; };
-		5A68FB722317303600CDB8AE /* Set.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A68FB712317303600CDB8AE /* Set.swift */; };
+		5A68FB722317303600CDB8AE /* SetGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A68FB712317303600CDB8AE /* SetGame.swift */; };
 		5A68FB742317305200CDB8AE /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A68FB732317305200CDB8AE /* Card.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5A2688AB232467CD0031B917 /* CardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardButton.swift; sourceTree = "<group>"; };
 		5A68FB5B2317295700CDB8AE /* Set.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Set.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A68FB5E2317295700CDB8AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5A68FB602317295700CDB8AE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -24,7 +26,7 @@
 		5A68FB652317295800CDB8AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5A68FB682317295800CDB8AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5A68FB6A2317295800CDB8AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5A68FB712317303600CDB8AE /* Set.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Set.swift; sourceTree = "<group>"; };
+		5A68FB712317303600CDB8AE /* SetGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGame.swift; sourceTree = "<group>"; };
 		5A68FB732317305200CDB8AE /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -62,8 +64,9 @@
 				5A68FB602317295700CDB8AE /* ViewController.swift */,
 				5A68FB622317295700CDB8AE /* Main.storyboard */,
 				5A68FB6A2317295800CDB8AE /* Info.plist */,
-				5A68FB712317303600CDB8AE /* Set.swift */,
+				5A68FB712317303600CDB8AE /* SetGame.swift */,
 				5A68FB732317305200CDB8AE /* Card.swift */,
+				5A2688AB232467CD0031B917 /* CardButton.swift */,
 			);
 			path = Set;
 			sourceTree = "<group>";
@@ -150,9 +153,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				5A68FB612317295700CDB8AE /* ViewController.swift in Sources */,
-				5A68FB722317303600CDB8AE /* Set.swift in Sources */,
+				5A68FB722317303600CDB8AE /* SetGame.swift in Sources */,
 				5A68FB5F2317295700CDB8AE /* AppDelegate.swift in Sources */,
 				5A68FB742317305200CDB8AE /* Card.swift in Sources */,
+				5A2688AC232467CD0031B917 /* CardButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

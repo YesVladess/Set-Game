@@ -10,170 +10,281 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    // MARK: IBOutlets
+    
+    ///
+    /// The boardView is a view containing all the cardViews
+    ///
+    /// Note: This view is transparent in InterfaceBuilder
+    @IBOutlet private weak var boardView: UIView!
+    
+    @IBOutlet private weak var scoreLabel: UILabel! {
+        didSet {
+            updateScoreLabel()
+        }
+    }
+    
+    @IBOutlet private var cardButtons: [CardButton]!
+    
+    // MARK: IBActions
+
+    ///
+    /// What to do when user presses "New Game"
+    ///
+    @IBAction private func newGameButtonPressed(_ sender: UIButton) {
+       initialSetup()
+    }
+    
+    // MARK: Private stored-properties
+    
+    ///
+    /// Contains the core functionality of a Set game
+    ///
+    private lazy var game = SetGame()
+    
+    // MARK: Private computed-properties
+    
+    ///
+    /// An array containing all the selected cards from the board
+    ///
+    private var selectedCards: [Card] {
+        var cards = [Card]()
+        // Check each cardButton and append the selected ones
+        for cardButton in cardButtons {
+            if cardButton.cardIsSelected {
+                if let card = cardButton.card {
+                    cards.append(card)
+                }
+            }
+        }
+        return cards
+    }
+    
+    // Assignment 2 (Task #4): "You will also need a 'Deal 3 More Cards' button"
+    
+    ///
+    /// Deal more cards.
+    ///
+    /// If there's room for more cards (and there are enough cards on the deck),
+    /// this method will add them to the board.
+    ///
+    /// Note that if there are 3 matching cards showing on the board, we'll replace
+    /// them with the new dealt cards.
+    ///
+    @IBAction private func deal() {
+        
+        // Assignment 2 (Task #9):
+        // "When the Deal 3 More Cards button is pressed either a) replace the selected cards if
+        // they are a match or b) add 3 cards to the game."
+        
+        // Before dealing more cards, we want to cleanup the board (i.e. if the board has
+        // a set selected, the cleanup method will replace them with new ones.)
+        let replacedCards = cleanup()
+        
+        // Do not deal more cards if cleanup already did it.
+        if replacedCards > 0 {
+            print("Not dealing because cleanup already replaced \(replacedCards) cards")
+            return
+        }
+        
+        // How many cards do we want to deal?
+        let maxCardsToDeal = 3
+        
+        // How many cards have we dealt?
+        var dealtCards = 0
+        
+        for cardButton in cardButtons {
+            
+            // Stop when we've dealt enough cards
+            if dealtCards == maxCardsToDeal {
+                return
+            }
+            
+            // If the cardbutton is not set, we can use it to display a new card
+            if cardButton.card == nil {
+                // Try to get a new card from the deck
+                if let newCard = game.draw() {
+                    // Add the new card in the available button
+                    cardButton.card = newCard
+                    // Track how many cards we've dealt
+                    dealtCards += 1
+                }
+            }
+        }
+    }
+    
+    ///
+    /// Handle the touch/press of a card
+    ///
+    @IBAction private func touchCard(_ sender: CardButton) {
+        
+        // First, cleanup any matching/mismatching sets that were previously selected
+        cleanup() // Assignment 2 (Task #7-8)
+        // Toogle the card's selection state (either select it or de-select it)
+        sender.toggleCardSelection() // Assignment 2 (Task #5): "Allow the user to select cards..."
+        
+        // Is this the third selected card?
+        if selectedCards.count == 3 {
+            
+            // Check if selected cards are a valid set
+            let isSet = game.evaluateSet(selectedCards[0], selectedCards[1], selectedCards[2])
+            
+            // Assignment 2 (Task #6):
+            //"After 3 cards have been selected, you must indicate whether those 3 cards are a match"
+            
+            if isSet {match(selectedCards)}
+            else {mismatch(selectedCards)}
+            
+            // Update score accordingly
+            updateScoreLabel()
+        }
+    }
+    
+    ///
+    /// Handle a match/set
+    ///
+    private func match(_ cards: [Card]) {
+        // Process each matched card
+        for card in cards {
+            // Update cardButton to reflect a match
+            if let cardButton = getButton(for: card) {
+                // De-select it
+                cardButton.cardIsSelected = false
+                // Show a "success/match" background color
+                cardButton.backgroundColor = CardColor.match
+            }
+        }
+    }
+    
+    ///
+    /// Handle a mismatch/invalid-set
+    ///
+    private func mismatch(_ cards: [Card]) {
+        // Process each mismatched card
+        for card in cards {
+            // Update cardButton to reflect a mismatch
+            if let cardButton = getButton(for: card) {
+                // De-select it
+                cardButton.cardIsSelected = false
+                // Show a "failure/mismatch" background color
+                cardButton.backgroundColor = CardColor.mismatch
+            }
+        }
+    }
+    
+    ///
+    /// Get the cardButton that contains the given card
+    ///
+    private func getButton(for card: Card) -> CardButton? {
+        for cardButton in cardButtons {
+            if cardButton.card == card {
+                return cardButton
+            }
+        }
+        return nil
+    }
+    
+    ///
+    /// Replace the card in the given cardButton. If there are no more
+    /// cards available, hide it.
+    ///
+    private func replaceCardButtonOrHideIt(in cardButton: CardButton) {
+        
+        // Get a new card from the game
+        if let newCard = game.draw() {
+            cardButton.card = newCard
+        }
+        else {
+            print("No cards in deck to replace, hiding card button")
+            cardButton.card = nil
+        }
+        
+    }
+    
+    ///
+    /// Cleanup cardButtons. It will cleanup any "match/mismatch" highlighted cardButton.
+    /// - If cardButton has a "match" highlight, replace it with a new card (hide it if no more
+    ///   cards available).
+    /// - If cardButton has a "mismatch" highlight, de-highlight it.
+    ///
+    /// Return the number of replaced cards (or hidden ones).
+    ///
+    @discardableResult
+    private func cleanup() -> Int {
+        
+        // Count (and return) the number of replaced cards
+        // (We'll replaced any mathced cards from the board)
+        var cardsReplaced = 0
+        
+        // Cleanup each cardButton
+        for cardButton in cardButtons {
+            
+            // De-highlight button
+            cardButton.backgroundColor = CardColor.defaultColor
+            
+            // If cardButton has a card set, process it
+            if cardButton.card != nil {
+                // Replace cards that are no longer open (i.e. the ones that are 'matched')
+                if !game.hand.contains(cardButton.card!) {
+                    replaceCardButtonOrHideIt(in: cardButton )
+                    cardsReplaced += 1
+                }
+            }
+        }
+        return cardsReplaced
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateViewFromModel()
-        // FOR TEST
-        game.deck = []
+        initialSetup()
     }
     
-    // Init game
-    private lazy var game = Set(maxShapeNumbers: 3, symbolsTypes: ["▲", "●", "■"], shadingsTypes: ["solid", "striped", "open"], shapeColors: ["red", "green", "purple"])
-    
-    private var selectedCardsCount = 0 {
-        didSet {
-            // Got tree cards selected?
-            if (selectedCardsCount == 3) {
-                if (game.match(set : game.selectedCards)) {
-                    paintSet(paintIt: #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1))
-                }
-                else {
-                    paintSet(paintIt: #colorLiteral(red: 0.5725490451, green: 0, blue: 0.2313725501, alpha: 1))
-                }
-            }
-        }
-    }
-    
-    func paintSet(paintIt color : UIColor?) {
-        for index in game.hand.indices {
-            if (game.isCardSelected(at: index)) {
-                let button = cardButtons[index]
-                button.layer.borderColor = color?.cgColor
-            }
-        }
-    }
-    
-    
-    @IBAction private func touchCard(_ sender: UIButton) {
+    ///
+    /// Setup a new game:
+    ///    - CardButtons
+    ///    - Update UI elements (i.e. score label)
+    ///    - Etc.
+    ///
+    private func initialSetup() {
         
-        let cardNumber = cardButtons.firstIndex(of: sender)!
-        
-            // If there is a match/missmatch already
-            if selectedCardsCount == 3 {
-                // Need to deselect all 3
-                for index in game.hand.indices {
-                    if (game.isCardSelected(at: index)) {
-                        deselectButton(at: index)
-                        selectedCardsCount-=1
-                    }
-                }
-                // Changing deck if set is found
-                if (game.match(set : game.selectedCards)) {
-                    game.setMatched()
-                }
-                game.selectedCards.removeAll()
-            }
-            // If card is already chosen or If card is no longer in the UI
-            if game.hand.indices.contains(cardNumber) && game.isCardSelected(at: cardNumber) {
-                deselectButton(at: cardNumber)
-                game.deselectCard(at: cardNumber)
-                selectedCardsCount-=1
-            }
-            else {
-                selectButton(at: cardNumber)
-                game.selectCard(at: cardNumber)
-                selectedCardsCount+=1
-            }
-        updateViewFromModel()
-        
-    }
-    
-    func deselectButton(at cardNumber : Int) {
-        let button = cardButtons[cardNumber]
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-        button.layer.cornerRadius = 1.0
-    }
-    
-    func selectButton(at cardNumber : Int) {
-        let button = cardButtons[cardNumber]
-        button.layer.borderWidth = 3.0
-        button.layer.borderColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
-        button.layer.cornerRadius = 8.0
-    }
-    
-    @IBOutlet private var cardButtons: [UIButton]!
-    
-    
-    @IBAction private func dealThreeMore(_ sender: UIButton) {
-        // Add UI is Full check
-        game.dealThreeMore()
-        updateViewFromModel()
-    }
-    
-    
-    @IBAction private func newGame(_ sender: UIButton) {
-        game = Set(maxShapeNumbers: 3, symbolsTypes: ["▲", "●", "■"], shadingsTypes: ["solid", "striped", "open"], shapeColors: ["red", "green", "purple"])
-        for index in cardButtons.indices {
-            let button = cardButtons[index]
-            button.setAttributedTitle(nil, for: UIControl.State.normal)
-            deselectButton(at: index)
-            button.backgroundColor = #colorLiteral(red: 0.003857404925, green: 0.5896782279, blue: 0.998706758, alpha: 1)
-            selectedCardsCount = 0
+        // Hide/deselect all buttons
+        for cardButton in cardButtons {
+            cardButton.card = nil
+            cardButton.cardIsSelected = false
+            cardButton.backgroundColor = CardColor.defaultColor
         }
-        updateViewFromModel()
-    }
-    
-    
-    @IBOutlet private weak var scoreLabel: UILabel!
-    
-    
-    private func updateViewFromModel() {
-        for index in cardButtons.indices {
-            let button = cardButtons[index]
-            if game.hand.indices.contains(index) {
-                let card = game.hand[index]
-                var title = ""
-                for _ in 1...card.number {
-                    title = title + card.symbol
-                }
-                
-                var color : UIColor?
-                switch (card.color) {
-                case "red" : color = #colorLiteral(red: 0.5725490451, green: 0, blue: 0.2313725501, alpha: 1)
-                case "green" : color = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
-                case "purple" : color = #colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1)
-                default :
-                    assertionFailure("No such color - \(card.color) can be used!")
-                }
-                
-                var shading = (alphaComponent : 1.0, strokeWidgh : "1")
-                switch (card.shading) {
-                case "solid" :
-                    shading.alphaComponent = 1
-                    shading.strokeWidgh = "5"
-                case "striped" :
-                    shading.alphaComponent = 0.25
-                    shading.strokeWidgh = "-5"
-                case "open" :
-                    shading.alphaComponent = 1
-                    shading.strokeWidgh = "-5"
-                default :
-                    assertionFailure("No such shading type - \(card.shading) can be used!")
-                }
-                
-                let attributes : [NSAttributedString.Key : Any ] = [
-                    .strokeColor : color!,
-                    .foregroundColor : color!.withAlphaComponent(CGFloat(shading.alphaComponent)),
-                    .strokeWidth : shading.strokeWidgh
-                ]
-                let attributedTitle = NSAttributedString(string: title, attributes: attributes)
-                
-                button.setAttributedTitle(attributedTitle, for: UIControl.State.normal)
-                button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-            } else {
-                button.setAttributedTitle(nil, for: UIControl.State.normal)
-                button.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-                button.layer.borderWidth = 1.0
-                button.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-                button.layer.cornerRadius = 1.0
-            }
+        
+        // Create a new game and open the inital number of cards
+        game = SetGame()
+        game.draw(n: initialCards)
+        
+        // Update score label
+        updateScoreLabel()
+        
+        // Start with 12 cards
+        for (i, card) in game.hand.enumerated() {
+            cardButtons[i].card = card
         }
     }
+    
+    ///
+    /// Keep scoreLabel in sync with the model
+    ///
+    private func updateScoreLabel() {
+        scoreLabel.text = "Score: \(game.score)"
+    }
+    
+    ///
+    /// Card colors for different states
+    ///
+    private struct CardColor {
+        static let mismatch: UIColor = #colorLiteral(red: 0.9568627477, green: 0.6588235497, blue: 0.5450980663, alpha: 1)
+        static let match: UIColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        static let defaultColor: UIColor = .white
+    }
+    
+    ///
+    /// The intial number of cards open/face-up
+    ///
+    private let initialCards = 12  // Assignment 2 (Task #3): "Deal 12 cards only to start."
 }
-
-
-
-
-
-
