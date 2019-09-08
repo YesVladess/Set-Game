@@ -35,31 +35,6 @@ class ViewController: UIViewController {
        initialSetup()
     }
     
-    // MARK: Private stored-properties
-    
-    ///
-    /// Contains the core functionality of a Set game
-    ///
-    private lazy var game = SetGame()
-    
-    // MARK: Private computed-properties
-    
-    ///
-    /// An array containing all the selected cards from the board
-    ///
-    private var selectedCards: [Card] {
-        var cards = [Card]()
-        // Check each cardButton and append the selected ones
-        for cardButton in cardButtons {
-            if cardButton.cardIsSelected {
-                if let card = cardButton.card {
-                    cards.append(card)
-                }
-            }
-        }
-        return cards
-    }
-    
     // Assignment 2 (Task #4): "You will also need a 'Deal 3 More Cards' button"
     
     ///
@@ -140,6 +115,47 @@ class ViewController: UIViewController {
         }
     }
     
+    // MARK: Private stored-properties
+    
+    ///
+    /// Contains the core functionality of a Set game
+    ///
+    private lazy var game = SetGame()
+    
+    ///
+    /// The intial number of cards open/face-up
+    ///
+    private let initialCards = 12  // Assignment 2 (Task #3): "Deal 12 cards only to start."
+    
+    ///
+    /// Card colors for different states
+    ///
+    private struct CardColor {
+        static let mismatch: UIColor = #colorLiteral(red: 0.9568627477, green: 0.6588235497, blue: 0.5450980663, alpha: 1)
+        static let match: UIColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        static let defaultColor: UIColor = .white
+    }
+    
+    // MARK: Private computed-properties
+    
+    ///
+    /// An array containing all the selected cards from the board
+    ///
+    private var selectedCards: [Card] {
+        var cards = [Card]()
+        // Check each cardButton and append the selected ones
+        for cardButton in cardButtons {
+            if cardButton.cardIsSelected {
+                if let card = cardButton.card {
+                    cards.append(card)
+                }
+            }
+        }
+        return cards
+    }
+
+    // MARK: Helper Methods
+
     ///
     /// Handle a match/set
     ///
@@ -273,18 +289,4 @@ class ViewController: UIViewController {
     private func updateScoreLabel() {
         scoreLabel.text = "Score: \(game.score)"
     }
-    
-    ///
-    /// Card colors for different states
-    ///
-    private struct CardColor {
-        static let mismatch: UIColor = #colorLiteral(red: 0.9568627477, green: 0.6588235497, blue: 0.5450980663, alpha: 1)
-        static let match: UIColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
-        static let defaultColor: UIColor = .white
-    }
-    
-    ///
-    /// The intial number of cards open/face-up
-    ///
-    private let initialCards = 12  // Assignment 2 (Task #3): "Deal 12 cards only to start."
 }
