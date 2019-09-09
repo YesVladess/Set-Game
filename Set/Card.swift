@@ -26,7 +26,6 @@ struct Card : Hashable {
     ///    - Property2: shape
     ///    - Property3: shade
     ///    - Property4: number
-    ///
     init(_ property1: State, _ property2: State, _ property3: State, _ property4: State) {
         self.property1 = property1
         self.property2 = property2
