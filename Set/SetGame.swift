@@ -37,12 +37,13 @@ struct SetGame {
     /// Keeps track of the current score
     ///
     private(set) var score : Int = 0 // Assignment 2 (Task #16): "Keep a score"
-    
+        
     ///
     /// Create a new set game with no initial cards.
     ///
     init() {
         generateDeck()
+        setTimer = Date.init()
     }
     
     ///
@@ -55,6 +56,12 @@ struct SetGame {
     /// evaluate whether or not three cards are a set (`evaluate(_)`).
     ///
     private(set) var hand = Set<Card>()
+    
+    ///
+    /// Set timer
+    ///
+    private(set) var setTimer : Date?
+    
     
     ///
     /// Generate the deck of cards.
@@ -117,6 +124,26 @@ struct SetGame {
     }
     
     ///
+    /// Compute score in according with time
+    ///
+    mutating func computeScore(isItSet : Bool) {
+        if isItSet {
+            let interval = Date.init().timeIntervalSince(setTimer!)
+            print("You find a set after \(interval) seconds")
+            var scoreModifier = Double(interval/2)
+            scoreModifier.round()
+            if (scoreModifier==1) {scoreModifier += 1}
+            scoreModifier=1/scoreModifier
+            print("You score modifier is \(scoreModifier)")
+            let adding = Int(Score.validSet * scoreModifier)
+            print("You got \(adding) points")
+            score += adding
+            print("Current score is \(score)")
+        } else { score += Int(Score.invalidSet) }
+        setTimer = Date.init()
+    }
+    
+    ///
     /// Evaluate the given cards. Return whether or not they are a valid set.
     ///
     /// - Given cards must exist in the `hand` list.
@@ -144,7 +171,7 @@ struct SetGame {
         let isSet = (property1 && property2 && property3 && property4)
         
         // Update the score
-        score += (isSet ? Score.validSet : Score.invalidSet)
+        computeScore(isItSet: isSet)
         
         // If cards were a valid set, remove them from the openCards list
         if isSet {
@@ -166,8 +193,8 @@ struct SetGame {
     ///
     private struct Score {
         private init() {}
-        static let validSet = +3
-        static let invalidSet = -5
+        static let validSet = +20.0
+        static let invalidSet = -10.0
     }
 }
 
