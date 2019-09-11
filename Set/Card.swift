@@ -16,7 +16,6 @@ struct Card : Hashable {
     let property3: State
     let property4: State
     
-    ///
     /// There are 4 different propeties a card might have. Each propertie's value might vary based
     /// on the `State` option.
     ///
@@ -35,11 +34,9 @@ struct Card : Hashable {
     
     // Assignment 2 (Task #13): "13.Use an enum as a meaningful part of your solution."
     
-    ///
     /// Each feature might contain one of three different states.
     ///
     /// These states are completely generic and not tied to any specific ones.
-    ///
     enum State: Int {
         case s1 = 1
         case s2 = 2

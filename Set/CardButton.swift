@@ -8,14 +8,14 @@
 
 import UIKit
 
-///
 /// Represents a UI card button/view to play a Set game
 ///
-/// *** Note **************
+/// ***********************
+/// Note
+///
 /// Implementation for this class is not good and lacks comments since the next
 /// assignment we'll be replacing it for a good design with custom views.
 /// ***********************
-///
 class CardButton: UIButton {
     
     var card: Card? {

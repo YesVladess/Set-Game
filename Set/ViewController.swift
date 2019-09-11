@@ -12,7 +12,6 @@ class ViewController: UIViewController {
     
     // MARK: IBOutlets
     
-    ///
     /// The boardView is a view containing all the cardViews
     ///
     /// Note: This view is transparent in InterfaceBuilder
@@ -28,16 +27,13 @@ class ViewController: UIViewController {
     
     // MARK: IBActions
 
-    ///
     /// What to do when user presses "New Game"
-    ///
     @IBAction private func newGameButtonPressed(_ sender: UIButton) {
        initialSetup()
     }
     
     // Assignment 2 (Task #4): "You will also need a 'Deal 3 More Cards' button"
     
-    ///
     /// Deal more cards.
     ///
     /// If there's room for more cards (and there are enough cards on the deck),
@@ -45,7 +41,6 @@ class ViewController: UIViewController {
     ///
     /// Note that if there are 3 matching cards showing on the board, we'll replace
     /// them with the new dealt cards.
-    ///
     @IBAction private func deal() {
         
         // Assignment 2 (Task #9):
@@ -62,10 +57,10 @@ class ViewController: UIViewController {
             return
         }
         
-        // How many cards do we want to deal?
+        /// How many cards do we want to deal?
         let maxCardsToDeal = 3
         
-        // How many cards have we dealt?
+        /// How many cards have we dealt?
         var dealtCards = 0
         
         for cardButton in cardButtons {
@@ -88,9 +83,7 @@ class ViewController: UIViewController {
         }
     }
     
-    ///
     /// Handle the touch/press of a card
-    ///
     @IBAction private func touchCard(_ sender: CardButton) {
         
         // First, cleanup any matching/mismatching sets that were previously selected
@@ -110,26 +103,27 @@ class ViewController: UIViewController {
             if isSet {match(selectedCards)}
             else {mismatch(selectedCards)}
             
-            // Update score accordingly
+            let interval = currentTime.timeIntervalSince(timer!)
+            game.computeScore(isItSet: isSet, found_time: interval)
+            
+            // Update score and timer accordingly
             updateScoreLabel()
+            timer = currentTime
         }
     }
     
     // MARK: Private stored-properties
     
-    ///
     /// Contains the core functionality of a Set game
-    ///
     private lazy var game = SetGame()
     
-    ///
+    /// Set timer
+    private var timer : Date?
+    
     /// The intial number of cards open/face-up
-    ///
     private let initialCards = 12  // Assignment 2 (Task #3): "Deal 12 cards only to start."
     
-    ///
     /// Card colors for different states
-    ///
     private struct CardColor {
         static let mismatch: UIColor = #colorLiteral(red: 0.9568627477, green: 0.6588235497, blue: 0.5450980663, alpha: 1)
         static let match: UIColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
@@ -138,9 +132,7 @@ class ViewController: UIViewController {
     
     // MARK: Private computed-properties
     
-    ///
     /// An array containing all the selected cards from the board
-    ///
     private var selectedCards: [Card] {
         var cards = [Card]()
         // Check each cardButton and append the selected ones
@@ -154,11 +146,15 @@ class ViewController: UIViewController {
         return cards
     }
 
+    private var currentTime : Date {
+        get {
+            return Date.init()
+        }
+    }
+
     // MARK: Helper Methods
 
-    ///
     /// Handle a match/set
-    ///
     private func match(_ cards: [Card]) {
         // Process each matched card
         for card in cards {
@@ -172,9 +168,7 @@ class ViewController: UIViewController {
         }
     }
     
-    ///
     /// Handle a mismatch/invalid-set
-    ///
     private func mismatch(_ cards: [Card]) {
         // Process each mismatched card
         for card in cards {
@@ -188,9 +182,7 @@ class ViewController: UIViewController {
         }
     }
     
-    ///
     /// Get the cardButton that contains the given card
-    ///
     private func getButton(for card: Card) -> CardButton? {
         for cardButton in cardButtons {
             if cardButton.card == card {
@@ -200,10 +192,8 @@ class ViewController: UIViewController {
         return nil
     }
     
-    ///
     /// Replace the card in the given cardButton. If there are no more
     /// cards available, hide it.
-    ///
     private func replaceCardButtonOrHideIt(in cardButton: CardButton) {
         
         // Get a new card from the game
@@ -217,14 +207,12 @@ class ViewController: UIViewController {
         
     }
     
-    ///
     /// Cleanup cardButtons. It will cleanup any "match/mismatch" highlighted cardButton.
     /// - If cardButton has a "match" highlight, replace it with a new card (hide it if no more
     ///   cards available).
     /// - If cardButton has a "mismatch" highlight, de-highlight it.
     ///
     /// Return the number of replaced cards (or hidden ones).
-    ///
     @discardableResult
     private func cleanup() -> Int {
         
@@ -255,12 +243,10 @@ class ViewController: UIViewController {
         initialSetup()
     }
     
-    ///
     /// Setup a new game:
     ///    - CardButtons
     ///    - Update UI elements (i.e. score label)
     ///    - Etc.
-    ///
     private func initialSetup() {
         
         // Hide/deselect all buttons
@@ -281,11 +267,10 @@ class ViewController: UIViewController {
         for (i, card) in game.hand.enumerated() {
             cardButtons[i].card = card
         }
+        timer = currentTime
     }
     
-    ///
     /// Keep scoreLabel in sync with the model
-    ///
     private func updateScoreLabel() {
         scoreLabel.text = "Score: \(game.score)"
     }

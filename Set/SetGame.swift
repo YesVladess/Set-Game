@@ -8,7 +8,6 @@
 
 import Foundation
 
-///
 /// Provides the core functionality of a set game (Model)
 ///
 /// Rules
@@ -30,42 +29,24 @@ import Foundation
 /// A 'Set' consists of three cards in which each property is EITHER the same on each card OR is
 /// different on each card. That is to say, any property in the 'Set' of three cards is either
 /// common to all three cards or is different on each card.
-///
 struct SetGame {
     
-    ///
     /// Keeps track of the current score
-    ///
     private(set) var score : Int = 0 // Assignment 2 (Task #16): "Keep a score"
-        
-    ///
+    
     /// Create a new set game with no initial cards.
-    ///
     init() {
         generateDeck()
-        setTimer = Date.init()
     }
     
-    ///
     /// The deck of available cards. Starts with all cards in it.
-    ///
     private(set) var deck = Set<Card>()
     
-    ///
     /// The list of open/available/facing-up cards. From these cards, the caller might
     /// evaluate whether or not three cards are a set (`evaluate(_)`).
-    ///
     private(set) var hand = Set<Card>()
     
-    ///
-    /// Set timer
-    ///
-    private(set) var setTimer : Date?
-    
-    
-    ///
     /// Generate the deck of cards.
-    ///
     private mutating func generateDeck() {
         for property1 in 1...3 {
             for property2 in 1...3 {
@@ -85,9 +66,7 @@ struct SetGame {
         }
     }
     
-    ///
     /// Returns the cards that were opened.
-    ///
     @discardableResult
     mutating func draw(n: Int) -> Set<Card> {
         
@@ -109,11 +88,9 @@ struct SetGame {
         return newCards
     }
     
-    ///
     /// Draw one random card from the `deck`, and place it into the `hand` list.
     ///
     /// Returns the card that was opened. (nil if none available)
-    ///
     @discardableResult
     mutating func draw() -> Card? {
         if let newCard = deck.removeRandomElement() {
@@ -123,12 +100,9 @@ struct SetGame {
         return nil
     }
     
-    ///
-    /// Compute score in according with time
-    ///
-    mutating func computeScore(isItSet : Bool) {
+    /// Compute score
+    mutating func computeScore(isItSet : Bool, found_time interval: TimeInterval) {
         if isItSet {
-            let interval = Date.init().timeIntervalSince(setTimer!)
             print("You find a set after \(interval) seconds")
             var scoreModifier = Double(interval/2)
             scoreModifier.round()
@@ -140,15 +114,12 @@ struct SetGame {
             score += adding
             print("Current score is \(score)")
         } else { score += Int(Score.invalidSet) }
-        setTimer = Date.init()
     }
     
-    ///
     /// Evaluate the given cards. Return whether or not they are a valid set.
     ///
     /// - Given cards must exist in the `hand` list.
     /// - If cards are a valid match/set, they will be removed from the `openCards` list.
-    ///
     mutating func evaluateSet(_ card1: Card, _ card2: Card, _ card3: Card) -> Bool {
         
         // Make sure given cards are actually open
@@ -170,9 +141,6 @@ struct SetGame {
         // Whether or not the given cards are a valid set
         let isSet = (property1 && property2 && property3 && property4)
         
-        // Update the score
-        computeScore(isItSet: isSet)
-        
         // If cards were a valid set, remove them from the openCards list
         if isSet {
             if let index = hand.firstIndex(of: card1) {
@@ -188,9 +156,7 @@ struct SetGame {
         return isSet
     }
     
-    ///
     /// Determines how many points different actions take.
-    ///
     private struct Score {
         private init() {}
         static let validSet = +20.0
@@ -201,10 +167,9 @@ struct SetGame {
 // Assignment 2 (Task #14): "Add a sensible extension to some data structure"
 // Extension for simple but useful uitilities
 extension Set {
-    ///
+
     /// Remove (and return) a random element from self.
     /// - Returns nil if self has no elements
-    ///
     mutating public func removeRandomElement() -> Element? {
         if self.count > 0 {
             let n = Int.random(in: 0..<self.count)
