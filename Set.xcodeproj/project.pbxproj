@@ -61,12 +61,9 @@
 			isa = PBXGroup;
 			children = (
 				5A68FB7023172FEF00CDB8AE /* SupportingFiles */,
-				5A68FB602317295700CDB8AE /* ViewController.swift */,
+				7C93387D234A59D400AFF566 /* UserStories */,
 				5A68FB622317295700CDB8AE /* Main.storyboard */,
 				5A68FB6A2317295800CDB8AE /* Info.plist */,
-				5A68FB712317303600CDB8AE /* SetGame.swift */,
-				5A68FB732317305200CDB8AE /* Card.swift */,
-				5A2688AB232467CD0031B917 /* CardButton.swift */,
 			);
 			path = Set;
 			sourceTree = "<group>";
@@ -79,6 +76,41 @@
 				5A68FB5E2317295700CDB8AE /* AppDelegate.swift */,
 			);
 			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		7C93387D234A59D400AFF566 /* UserStories */ = {
+			isa = PBXGroup;
+			children = (
+				7C93387E234A59DB00AFF566 /* MainStory */,
+			);
+			path = UserStories;
+			sourceTree = "<group>";
+		};
+		7C93387E234A59DB00AFF566 /* MainStory */ = {
+			isa = PBXGroup;
+			children = (
+				7C933880234A59FD00AFF566 /* Models */,
+				7C93387F234A59F000AFF566 /* View */,
+			);
+			path = MainStory;
+			sourceTree = "<group>";
+		};
+		7C93387F234A59F000AFF566 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5A68FB602317295700CDB8AE /* ViewController.swift */,
+				5A2688AB232467CD0031B917 /* CardButton.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		7C933880234A59FD00AFF566 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5A68FB732317305200CDB8AE /* Card.swift */,
+				5A68FB712317303600CDB8AE /* SetGame.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
