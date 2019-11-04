@@ -8,6 +8,7 @@
 
 import Foundation
 
+///
 /// Provides the core functionality of a set game (Model)
 ///
 /// Rules
@@ -16,19 +17,20 @@ import Foundation
 /// table. Each card has a variation of the following four features:
 ///
 /// (A) Color:
-/// Each card can be in 3 colors.
+/// Each card is red, green, or purple.
 ///
 /// (B) Symbol:
-/// Each card contains 3 kinds of symbols.
+/// Each card contains ovals, squiggles, or diamonds.
 ///
 /// (C) Number:
-/// Each card has can have one, two or three symbols.
+/// Each card has one, two, or three symbols.
 ///
-/// (D) Shading: Each card can have 3 shadings.
+/// (D) Shading: Each card is solid, open, or striped.
 ///
-/// A 'Set' consists of three cards in which each property is EITHER the same on each card OR is
-/// different on each card. That is to say, any property in the 'Set' of three cards is either
+/// A 'Set' consists of three cards in which each feature is EITHER the same on each card OR is
+/// different on each card. That is to say, any feature in the 'Set' of three cards is either
 /// common to all three cards or is different on each card.
+///
 struct SetGame {
     
     /// Keeps track of the current score
@@ -36,18 +38,6 @@ struct SetGame {
     
     /// Create a new set game with no initial cards.
     init() {
-        generateDeck()
-    }
-    
-    /// The deck of available cards. Starts with all cards in it.
-    private(set) var deck = Set<Card>()
-    
-    /// The list of open/available/facing-up cards. From these cards, the caller might
-    /// evaluate whether or not three cards are a set (`evaluate(_)`).
-    private(set) var hand = Set<Card>()
-    
-    /// Generate the deck of cards.
-    private mutating func generateDeck() {
         for property1 in 1...3 {
             for property2 in 1...3 {
                 for property3 in 1...3 {
@@ -66,7 +56,20 @@ struct SetGame {
         }
     }
     
+    /// The deck of available cards. Starts with all cards in it.
+    private(set) var deck = Set<Card>()
+    
+    ///
+    /// The list of open/available/facing-up cards. From these cards, the caller might
+    /// evaluate whether or not three cards are a set (`evaluate(_)`).
+    ///
+    private(set) var hand = Set<Card>()
+    
+    ///
+    /// Draw `n` number of random cards from the `deck`, and place them into the `hand` list.
+    ///
     /// Returns the cards that were opened.
+    ///
     @discardableResult
     mutating func draw(n: Int) -> Set<Card> {
         
@@ -88,25 +91,13 @@ struct SetGame {
         return newCards
     }
     
-    /// Draw one random card from the `deck`, and place it into the `hand` list.
-    ///
-    /// Returns the card that was opened. (nil if none available)
-    @discardableResult
-    mutating func draw() -> Card? {
-        if let newCard = deck.removeRandomElement() {
-            hand.insert(newCard)
-            return newCard
-        }
-        return nil
-    }
-    
     /// Compute score
-    mutating func computeScore(isItSet : Bool, found_time interval: TimeInterval) {
-        if isItSet {
+    mutating func computeScore(itIsSet: Bool, foundTime interval: TimeInterval) {
+        if itIsSet {
             print("You find a set after \(interval) seconds")
             var scoreModifier = Double(interval/2)
             scoreModifier.round()
-            if (scoreModifier==1) {scoreModifier += 1}
+            if (scoreModifier == 1) {scoreModifier += 1}
             scoreModifier=1/scoreModifier
             print("You score modifier is \(scoreModifier)")
             let adding = Int(Score.validSet * scoreModifier)
@@ -165,7 +156,7 @@ struct SetGame {
 }
 
 // Assignment 2 (Task #14): "Add a sensible extension to some data structure"
-// Extension for simple but useful uitilities
+// Extension for simple but useful utilities
 extension Set {
 
     /// Remove (and return) a random element from self.
