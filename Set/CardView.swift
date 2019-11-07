@@ -272,7 +272,7 @@ class CardView: UIView {
             rect1 = rectForOne.offsetBy(dx: sizeOfEachRect.width/2, dy: 0)
             rect2 = rectForOne.offsetBy(dx: -(sizeOfEachRect.width/2), dy: 0)
         }
-        // We have more height than width, distribute them vertically
+            // We have more height than width, distribute them vertically
         else {
             rect1 = rectForOne.offsetBy(dx: 0, dy: sizeOfEachRect.height/2)
             rect2 = rectForOne.offsetBy(dx: 0, dy: -(sizeOfEachRect.height/2))
@@ -308,7 +308,7 @@ class CardView: UIView {
                            width: sizeOfEachRect.width,
                            height: sizeOfEachRect.height)
         }
-        // We have more height than width, distribute them vertically
+            // We have more height than width, distribute them vertically
         else {
             rect1 = CGRect(x: centerRect.minX,
                            y: centerRect.minY - sizeOfEachRect.height,
@@ -378,13 +378,62 @@ class CardView: UIView {
     }
     
     ///
+    /// Get UIBezierPath for a "squiggle" shape that fits inside the given rect.
+    /// The path will contain a small margin/padding space.
+    ///
+    private func squigglePath(in rect: CGRect) -> UIBezierPath {
+        
+        let margin = min(rect.size.width, rect.size.height) * shapeMargin
+        let drawingRect = rect.insetBy(dx: margin, dy: margin)
+        let rectWidth = drawingRect.size.width
+        let rectHeight = drawingRect.size.height
+        let path = UIBezierPath()
+        var point, cp1, cp2: CGPoint
+        
+        // Choose the start point
+        point = CGPoint(x: drawingRect.origin.x + rectWidth*0.05, y: drawingRect.origin.y + rectHeight*0.40)
+        path.move(to: point)
+        // Draw 1st curve
+        point = CGPoint(x: drawingRect.origin.x + rectWidth*0.35, y: drawingRect.origin.y + rectHeight*0.25)
+        cp1 = CGPoint(x: drawingRect.origin.x + rectWidth*0.03, y: drawingRect.origin.y + rectHeight*0.15)
+        cp2 = CGPoint(x: drawingRect.origin.x + rectWidth*0.18, y: drawingRect.origin.y + rectHeight*0.10)
+        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
+        // Draw 2nd curve
+        point = CGPoint(x: drawingRect.origin.x + rectWidth*0.75, y: drawingRect.origin.y + rectHeight*0.30)
+        cp1 = CGPoint(x: drawingRect.origin.x + rectWidth*0.40, y: drawingRect.origin.y + rectHeight*0.30)
+        cp2 = CGPoint(x: drawingRect.origin.x + rectWidth*0.60, y: drawingRect.origin.y + rectHeight*0.45)
+        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
+        // Draw 3rd curve
+        point = CGPoint(x: drawingRect.origin.x + rectWidth*0.97, y: drawingRect.origin.y + rectHeight*0.35)
+        cp1 = CGPoint(x: drawingRect.origin.x + rectWidth*0.87, y: drawingRect.origin.y + rectHeight*0.15)
+        cp2 = CGPoint(x: drawingRect.origin.x + rectWidth*0.98, y: drawingRect.origin.y + rectHeight*0.00)
+        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
+        // Draw 4th curve
+        point = CGPoint(x: drawingRect.origin.x + rectWidth*0.45, y: drawingRect.origin.y + rectHeight*0.85)
+        cp1 = CGPoint(x: drawingRect.origin.x + rectWidth*0.95, y: drawingRect.origin.y + rectHeight*1.10)
+        cp2 = CGPoint(x: drawingRect.origin.x + rectWidth*0.50, y: drawingRect.origin.y + rectHeight*0.95)
+        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
+        // Draw 5th curve
+        point = CGPoint(x: drawingRect.origin.x + rectWidth*0.25, y: drawingRect.origin.y + rectHeight*0.85)
+        cp1 = CGPoint(x: drawingRect.origin.x + rectWidth*0.40, y: drawingRect.origin.y + rectHeight*0.80)
+        cp2 = CGPoint(x: drawingRect.origin.x + rectWidth*0.35, y: drawingRect.origin.y + rectHeight*0.75)
+        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
+        // Draw 6th curve to the start point
+        point = CGPoint(x: drawingRect.origin.x + rectWidth*0.05, y: drawingRect.origin.y + rectHeight*0.39)
+        cp1 = CGPoint(x: drawingRect.origin.x + rectWidth*0.2, y: drawingRect.origin.y + rectHeight*0.95)
+        cp2 = CGPoint(x: drawingRect.origin.x + rectWidth*0.3, y: drawingRect.origin.y + rectHeight*0.80)
+        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
+        return path
+    }
+    
+    ///
     /// Get a stroke UIColor for the given `Color`
     ///
     private func strokeColor(for color: Color) -> UIColor {
         switch color {
-        case .green: return #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
-        case .purple: return #colorLiteral(red: 0.6377331317, green: 0, blue: 0.7568627596, alpha: 1)
-        case .red: return #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+        case .green: return #colorLiteral(red: 0, green: 0.5603182912, blue: 0, alpha: 1)
+        case .purple: return #colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1)
+        case .red: return #colorLiteral(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
         }
     }
     
@@ -406,60 +455,5 @@ class CardView: UIView {
         // No fill at all (totally transparent)
         case .unfilled: return stroke.withAlphaComponent(0.0)
         }
-    }
-    
-    ///
-    /// Get UIBezierPath for a "squiggle" shape that fits inside the given rect.
-    /// The path will contain a small margin/padding space.
-    ///
-    private func squigglePath(in rect: CGRect) -> UIBezierPath {
-        
-        // ************************************
-        // **** NOTE: *************************
-        // Path for squiggle retrieved from:
-        // https://stackoverflow.com/questions/25387940
-        // TODO: Eventually revisit this implementation and come up with one in my own.
-        // ************************************
-        // ************************************
-        
-        let margin = min(rect.size.width, rect.size.height) * shapeMargin
-        let drawingRect = rect.insetBy(dx: margin, dy: margin)
-        
-        let path = UIBezierPath()
-        var point, cp1, cp2: CGPoint
-
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.05, y: drawingRect.origin.y + drawingRect.size.height*0.40)
-        path.move(to: point)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.35, y: drawingRect.origin.y + drawingRect.size.height*0.25)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.09, y: drawingRect.origin.y + drawingRect.size.height*0.15)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.18, y: drawingRect.origin.y + drawingRect.size.height*0.10)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.75, y: drawingRect.origin.y + drawingRect.size.height*0.30)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.40, y: drawingRect.origin.y + drawingRect.size.height*0.30)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.60, y: drawingRect.origin.y + drawingRect.size.height*0.45)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.97, y: drawingRect.origin.y + drawingRect.size.height*0.35)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.87, y: drawingRect.origin.y + drawingRect.size.height*0.15)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.98, y: drawingRect.origin.y + drawingRect.size.height*0.00)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.45, y: drawingRect.origin.y + drawingRect.size.height*0.85)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.95, y: drawingRect.origin.y + drawingRect.size.height*1.10)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.50, y: drawingRect.origin.y + drawingRect.size.height*0.95)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.25, y: drawingRect.origin.y + drawingRect.size.height*0.85)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.40, y: drawingRect.origin.y + drawingRect.size.height*0.80)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.35, y: drawingRect.origin.y + drawingRect.size.height*0.75)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.05, y: drawingRect.origin.y + drawingRect.size.height*0.40)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.00, y: drawingRect.origin.y + drawingRect.size.height*1.10)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.005, y: drawingRect.origin.y + drawingRect.size.height*0.60)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        return path
     }
 }
