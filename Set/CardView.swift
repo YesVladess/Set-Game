@@ -146,16 +146,12 @@ class CardView: UIView {
         
         // We want rounded corners in our card
         let cornerRadius = min(bounds.size.width, bounds.size.height) * 0.1
-        
         // The path that draws the card's structure
         let cardPath = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
-        
         // Add clip on the card's border
         cardPath.addClip()
-        
         // Card's background/fill color
         UIColor.white.setFill()
-        
         // If card is selected, draw a highlight color around it
         if isSelected {
             cardPath.lineWidth = min(bounds.size.width, bounds.size.height) * 0.1
@@ -165,7 +161,6 @@ class CardView: UIView {
             cardPath.lineWidth = min(bounds.size.width, bounds.size.height) * 0.01
             UIColor.lightGray.setStroke()
         }
-        
         // Fill and stroke it
         cardPath.fill()
         cardPath.stroke()
@@ -178,20 +173,15 @@ class CardView: UIView {
         
         // Get the shape's path
         let shapePath = path(forShape: shape, in: rect)
-        
         // The stroke color we want to use
         let stroke = strokeColor(for: color)
-        
         // The fill/shade color we want to use
         let fill = fillColor(for: color, with: shade)
-        
         // Set stroke and fill colors
         stroke.setStroke()
         fill.setFill()
-        
         // Set the lineWidth
         shapePath.lineWidth = min(rect.size.width, rect.size.height) * 0.05
-        
         // Stroke and fill
         shapePath.fill()
         shapePath.stroke()
@@ -222,7 +212,6 @@ class CardView: UIView {
         var rects = [CGRect]()
         
         switch elements {
-            
         // One rect
         case .one:
             rects.append(rectForOneElement(sizeOfEachRect: sizeOfEachRect))
@@ -294,34 +283,34 @@ class CardView: UIView {
         let centerRect = rectForOneElement(sizeOfEachRect: sizeOfEachRect)
         
         // Could be top/bottom or left/right depending on card's bounds.
-        let rect1, rect2: CGRect
+        let leftRect, rightRect: CGRect
         
         // We have more width than height, distribute them horizontally
         if bounds.width > bounds.height {
-            rect1 = CGRect(x: centerRect.minX - sizeOfEachRect.width,
+            leftRect = CGRect(x: centerRect.minX - sizeOfEachRect.width,
                            y: centerRect.minY,
                            width: sizeOfEachRect.width,
                            height: sizeOfEachRect.height)
             
-            rect2 = CGRect(x: centerRect.maxX,
+            rightRect = CGRect(x: centerRect.maxX,
                            y: centerRect.minY,
                            width: sizeOfEachRect.width,
                            height: sizeOfEachRect.height)
         }
             // We have more height than width, distribute them vertically
         else {
-            rect1 = CGRect(x: centerRect.minX,
+            leftRect = CGRect(x: centerRect.minX,
                            y: centerRect.minY - sizeOfEachRect.height,
                            width: sizeOfEachRect.width,
                            height: sizeOfEachRect.height)
             
-            rect2 = CGRect(x: centerRect.minX,
+            rightRect = CGRect(x: centerRect.minX,
                            y: centerRect.maxY,
                            width: sizeOfEachRect.width,
                            height: sizeOfEachRect.height)
         }
         
-        return [centerRect, rect1, rect2]
+        return [centerRect, leftRect, rightRect]
     }
     
     ///
@@ -332,29 +321,22 @@ class CardView: UIView {
         
         // Path to populate
         let path = UIBezierPath()
-        
         // Add a little margin/padding
         let margin = min(rect.size.width, rect.size.height) * shapeMargin
-        
         // The top-center point
         let topCenter = CGPoint(x: rect.midX, y: rect.minY + margin)
         path.move(to: topCenter)
-        
         // Go to the center-right
         let centerRight = CGPoint(x: rect.maxX - margin, y: rect.midY)
         path.addLine(to: centerRight)
-        
         // Got to the bottom-center
         let bottomCenter = CGPoint(x: rect.midX, y: rect.maxY - margin)
         path.addLine(to: bottomCenter)
-        
         // Go to the center-left
         let centerLeft = CGPoint(x: rect.minX + margin, y: rect.midY)
         path.addLine(to: centerLeft)
-        
         // Close it to complete the shape
         path.close()
-        
         return path
     }
     
@@ -366,13 +348,11 @@ class CardView: UIView {
         
         // To add a little margin/padding
         let margin = min(rect.size.width, rect.size.height) * shapeMargin
-        
         // Oval needs to fit inside this space
         let rectWithMargin = CGRect(x: rect.origin.x + margin,
                                     y: rect.origin.y + margin,
                                     width: rect.size.width - (margin * 2),
                                     height: rect.size.height - (margin * 2))
-        
         // Create the oval
         return UIBezierPath(ovalIn: rectWithMargin)
     }
@@ -445,13 +425,12 @@ class CardView: UIView {
         // The shade color depends on the stroke color, it just changes in transparency based on
         // the shade type
         let stroke = strokeColor(for: color)
-        
         // Change transparency based on shade type
         switch shade {
         // Totally filled/solid
         case .solid: return stroke.withAlphaComponent(1.0)
         // A little transparency (shaded)
-        case .shaded: return stroke.withAlphaComponent(0.2)
+        case .shaded: return stroke.withAlphaComponent(0.15)
         // No fill at all (totally transparent)
         case .unfilled: return stroke.withAlphaComponent(0.0)
         }
