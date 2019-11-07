@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreGraphics
 
 ///
 /// UIView that represents a Card to play a traditional Set game
@@ -57,7 +58,7 @@ class CardView: UIView {
     /// Different types of shade/fill
     ///
     enum Shade {
-        case solid, shaded, unfilled
+        case solid, striped, unfilled
     }
     
     ///
@@ -106,7 +107,10 @@ class CardView: UIView {
         
         // Draw each shape (i.e. card might have one, two, or three shapes)
         for rect in getRects(for: elements!) {
-            drawContent(rect: rect, shape: shape!, color: color!, shade: shade!)
+            let context = UIGraphicsGetCurrentContext()
+            context?.protectGState {
+                drawContent(rect: rect, shape: shape!, color: color!, shade: shade!)
+            }
         }
     }
     
@@ -182,6 +186,14 @@ class CardView: UIView {
         fill.setFill()
         // Set the lineWidth
         shapePath.lineWidth = min(rect.size.width, rect.size.height) * 0.05
+        // Add stripes, if needed
+        if shade == .striped {
+            let stripes = stripesPath(in: rect)
+            stripes.lineWidth = min(rect.size.width, rect.size.height) * 0.045
+            stroke.setStroke()
+            shapePath.addClip()
+            stripes.stroke()
+        }
         // Stroke and fill
         shapePath.fill()
         shapePath.stroke()
@@ -430,9 +442,34 @@ class CardView: UIView {
         // Totally filled/solid
         case .solid: return stroke.withAlphaComponent(1.0)
         // A little transparency (shaded)
-        case .shaded: return stroke.withAlphaComponent(0.15)
+        case .striped: return stroke.withAlphaComponent(0.0)
         // No fill at all (totally transparent)
         case .unfilled: return stroke.withAlphaComponent(0.0)
         }
+    }
+    
+    func stripesPath(in rect: CGRect) -> UIBezierPath {
+        
+        let path = UIBezierPath()
+        let margin = min(rect.size.width, rect.size.height) * shapeMargin
+        let drawingRect = rect.insetBy(dx: margin, dy: margin)
+        var point: CGPoint
+        
+        for i in 1...10 {
+            point = CGPoint(x: rect.minX + drawingRect.size.width*0.25*CGFloat(i), y: drawingRect.minY)
+            path.move(to: point)
+            
+            point = CGPoint(x: drawingRect.minX + drawingRect.size.width*0.25*CGFloat(i), y: rect.maxY)
+            path.addLine(to: point)
+        }
+        return path
+    }
+}
+
+extension CGContext{
+    func protectGState(_ drawStuff: () -> Void) {
+        saveGState()
+        drawStuff()
+        restoreGState()
     }
 }

@@ -206,7 +206,7 @@ class SetViewController: UIViewController {
         // Shade
         switch card.property2 {
         case .s1: cardView.shade = .solid
-        case .s2: cardView.shade = .shaded
+        case .s2: cardView.shade = .striped
         case .s3: cardView.shade = .unfilled
         }
         
