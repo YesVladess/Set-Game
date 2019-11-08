@@ -16,67 +16,40 @@ import CoreGraphics
 class CardView: UIView {
     
     // MARK: Public properties
-
-    ///
-    /// The card's Color type
-    ///
+    
     var color: Color? { didSet { setNeedsDisplay() } }
     
-    ///
-    /// The card's Shade type
-    ///
     var shade: Shade? { didSet { setNeedsDisplay() } }
     
-    ///
-    /// The number of elements/shapes in the card
-    ///
-    var elements: Elements? { didSet { setNeedsDisplay() } }
+    var elementsNumber: ElementsNumber? { didSet { setNeedsDisplay() } }
     
-    ///
-    /// The card's Shape
-    ///
     var shape: Shape? { didSet { setNeedsDisplay() } }
     
-    ///
-    /// Whether or not the card is currently selected
-    ///
     @IBInspectable
     var isSelected: Bool = false {
         didSet { setNeedsDisplay() }
     }
     
     // MARK: Public types
-
-    ///
-    /// Different types of color
-    ///
+    
     enum Color: Int {
         case green, red, purple
     }
     
-    ///
-    /// Different types of shade/fill
-    ///
     enum Shade {
         case solid, striped, unfilled
     }
     
-    ///
-    /// Number of elements/figures in the card
-    ///
-    enum Elements {
+    enum ElementsNumber {
         case one, two, three
     }
     
-    ///
-    /// The shape of the card's figures
-    ///
     enum Shape {
         case squiggle, diamond, oval
     }
     
     // MARK: Overriden properties
-
+    
     ///
     /// Redraw the card when the view's frame changes
     ///
@@ -85,14 +58,14 @@ class CardView: UIView {
     }
     
     // MARK: Overriden methods
-
+    
     ///
     /// Do custom drawing of the current card. Note that the card must have these set
     /// to properly display a Set card:
     ///    - Shape
     ///    - Color
     ///    - Shade
-    ///    - Elements
+    ///    - ElementsNumber
     ///
     override func draw(_ rect: CGRect) {
         
@@ -100,17 +73,15 @@ class CardView: UIView {
         setupCard()
         
         // Make sure all features are set (not nil)
-        guard color != nil, shade != nil, elements != nil, shape != nil else {
+        guard color != nil, shade != nil, elementsNumber != nil, shape != nil else {
             print("All features must be set. Cannot draw card.")
             return
         }
         
-        // Draw each shape (i.e. card might have one, two, or three shapes)
-        for rect in getRects(for: elements!) {
+        // Draw each element (i.e. card might have one, two, or three elements)
+        for rect in getRects(for: elementsNumber!) {
             let context = UIGraphicsGetCurrentContext()
-            context?.protectGState {
-                drawContent(rect: rect, shape: shape!, color: color!, shade: shade!)
-            }
+            context?.protectGState { drawContent(rect: rect, shape: shape!, color: color!, shade: shade!) }
         }
     }
     
@@ -127,7 +98,7 @@ class CardView: UIView {
     }
     
     // MARK: Private properties
-
+    
     ///
     /// Shape margin percentage. Used to add a little margin to each shape, relative to the
     /// frame's size.
@@ -198,7 +169,7 @@ class CardView: UIView {
         shapePath.fill()
         shapePath.stroke()
     }
-
+    
     ///
     /// Get a UIBezierPath for the given shape which fits in the given rect
     ///
@@ -214,7 +185,7 @@ class CardView: UIView {
     ///
     /// Get CGRect(s) for the given number of elements.
     ///
-    private func getRects(for elements: Elements) -> [CGRect] {
+    private func getRects(for elements: ElementsNumber) -> [CGRect] {
         
         // Calculate the size for each rect
         let maxOfWidthAndHeight = max(bounds.size.width, bounds.size.height)
@@ -300,26 +271,26 @@ class CardView: UIView {
         // We have more width than height, distribute them horizontally
         if bounds.width > bounds.height {
             leftRect = CGRect(x: centerRect.minX - sizeOfEachRect.width,
-                           y: centerRect.minY,
-                           width: sizeOfEachRect.width,
-                           height: sizeOfEachRect.height)
+                              y: centerRect.minY,
+                              width: sizeOfEachRect.width,
+                              height: sizeOfEachRect.height)
             
             rightRect = CGRect(x: centerRect.maxX,
-                           y: centerRect.minY,
-                           width: sizeOfEachRect.width,
-                           height: sizeOfEachRect.height)
+                               y: centerRect.minY,
+                               width: sizeOfEachRect.width,
+                               height: sizeOfEachRect.height)
         }
             // We have more height than width, distribute them vertically
         else {
             leftRect = CGRect(x: centerRect.minX,
-                           y: centerRect.minY - sizeOfEachRect.height,
-                           width: sizeOfEachRect.width,
-                           height: sizeOfEachRect.height)
+                              y: centerRect.minY - sizeOfEachRect.height,
+                              width: sizeOfEachRect.width,
+                              height: sizeOfEachRect.height)
             
             rightRect = CGRect(x: centerRect.minX,
-                           y: centerRect.maxY,
-                           width: sizeOfEachRect.width,
-                           height: sizeOfEachRect.height)
+                               y: centerRect.maxY,
+                               width: sizeOfEachRect.width,
+                               height: sizeOfEachRect.height)
         }
         
         return [centerRect, leftRect, rightRect]

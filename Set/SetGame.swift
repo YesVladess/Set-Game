@@ -160,7 +160,7 @@ struct SetGame {
 extension Set {
 
     /// Remove (and return) a random element from self.
-    /// - Returns nil if self has no elements
+    /// - Returns nil if self has no elementsNumber
     mutating public func removeRandomElement() -> Element? {
         if self.count > 0 {
             let n = Int.random(in: 0..<self.count)

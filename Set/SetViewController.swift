@@ -219,9 +219,9 @@ class SetViewController: UIViewController {
         
         // Number of elements in the card
         switch card.property4 {
-        case .s1: cardView.elements = .one
-        case .s2: cardView.elements = .two
-        case .s3: cardView.elements = .three
+        case .s1: cardView.elementsNumber = .one
+        case .s2: cardView.elementsNumber = .two
+        case .s3: cardView.elementsNumber = .three
         }
         
         // Add tap-to select gestureRecognizer
