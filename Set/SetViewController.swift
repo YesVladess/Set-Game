@@ -62,6 +62,8 @@ class SetViewController: UIViewController {
     ///
     private let initialCards = 9
     
+    private var timer : Date?
+    
     // MARK: Private computed-properties
     
     ///
@@ -75,6 +77,12 @@ class SetViewController: UIViewController {
             }
         }
         return result
+    }
+    
+    private var currentTime : Date {
+        get {
+            return Date.init()
+        }
     }
     
     // MARK: Method overrides
@@ -105,6 +113,7 @@ class SetViewController: UIViewController {
         board = [:]
         game = SetGame()
         game.draw(n: initialCards)
+        timer = currentTime
         updateUI()
     }
     
@@ -283,6 +292,12 @@ class SetViewController: UIViewController {
             
             if isSet { match(selectedCards) }
             else { mismatch(selectedCards) }
+            
+            // Update score and timer accordingly
+            let interval = currentTime.timeIntervalSince(timer!)
+            game.computeScore(itIsSet: isSet, foundTime: interval)
+            updateScoreLabel()
+            timer = currentTime
             
             // Keep UI in sync with the model
             updateUI()
