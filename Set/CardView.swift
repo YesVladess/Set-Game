@@ -50,23 +50,19 @@ class CardView: UIView {
     
     // MARK: Overriden properties
     
-    ///
     /// Redraw the card when the view's frame changes
-    ///
     override var frame: CGRect {
         didSet { setNeedsDisplay() }
     }
     
     // MARK: Overriden methods
     
-    ///
     /// Do custom drawing of the current card. Note that the card must have these set
     /// to properly display a Set card:
     ///    - Shape
     ///    - Color
     ///    - Shade
     ///    - ElementsNumber
-    ///
     override func draw(_ rect: CGRect) {
         
         // Setup card's general look and feel (without the actual figures/shapes)
@@ -99,24 +95,18 @@ class CardView: UIView {
     
     // MARK: Private properties
     
-    ///
     /// Shape margin percentage. Used to add a little margin to each shape, relative to the
     /// frame's size.
-    ///
     private let shapeMargin: CGFloat = 0.15
     
     // MARK: Private methods
     
-    ///
     /// Do any initial setup (called right after init())
-    ///
     private func initialSetup() {
         isOpaque = false
     }
     
-    ///
     /// Setup card's general look and feel (without the actual features)
-    ///
     private func setupCard() {
         
         // We want rounded corners in our card
@@ -141,9 +131,7 @@ class CardView: UIView {
         cardPath.stroke()
     }
     
-    ///
     /// Draw the card's features inside the given rect
-    ///
     private func drawContent(rect: CGRect, shape: Shape, color: Color, shade: Shade) {
         
         // Get the shape's path
@@ -170,9 +158,7 @@ class CardView: UIView {
         shapePath.stroke()
     }
     
-    ///
     /// Get a UIBezierPath for the given shape which fits in the given rect
-    ///
     private func path(forShape shape: Shape, in rect: CGRect) -> UIBezierPath {
         // Delegate the actual work to specific methods
         switch shape {
@@ -182,9 +168,7 @@ class CardView: UIView {
         }
     }
     
-    ///
     /// Get CGRect(s) for the given number of elements.
-    ///
     private func getRects(for elements: ElementsNumber) -> [CGRect] {
         
         // Calculate the size for each rect
@@ -209,10 +193,8 @@ class CardView: UIView {
         return rects
     }
     
-    ///
     /// Get a CGRect for drawing one element/shape inside the card:
     ///    - The rect will be centered horizontally and vertically
-    ///
     private func rectForOneElement(sizeOfEachRect: CGSize) -> CGRect {
         
         let originX = bounds.midX - sizeOfEachRect.width / 2
@@ -223,13 +205,11 @@ class CardView: UIView {
         return CGRect(origin: originPoint, size: sizeOfEachRect)
     }
     
-    ///
     /// Get two CGRects for drawing two elements/shapes inside the card:
     ///    - If card's width > card's height:
     ///       - Rects will be horizontally distributed
     ///    - Else:
     ///       - Rects will be vertically distributed
-    ///
     private func rectsForTwoElements(sizeOfEachRect: CGSize) -> [CGRect] {
         
         // We'll use the rect for showing 1 element as a guide to distribute the
@@ -253,13 +233,11 @@ class CardView: UIView {
         return [rect1, rect2]
     }
     
-    ///
     /// Get three CGRects for drawing three elements/shapes inside the card:
     ///    - If card's width > card's height:
     ///       - Rects will be horizontally distributed
     ///    - Else:
     ///       - Rects will be vertically distributed
-    ///
     private func rectsForThreeElements(sizeOfEachRect: CGSize) -> [CGRect] {
         
         // The rect for the element in the center is the same for 1 or 3 elements
@@ -296,10 +274,8 @@ class CardView: UIView {
         return [centerRect, leftRect, rightRect]
     }
     
-    ///
     /// Get UIBezierPath for a diamond shape that fits inside the given rect.
     /// The path will contain a small margin/padding space.
-    ///
     private func diamondPath(in rect: CGRect) -> UIBezierPath {
         
         // Path to populate
@@ -323,10 +299,8 @@ class CardView: UIView {
         return path
     }
     
-    ///
     /// Get UIBezierPath for an oval shape that fits inside the given rect.
     /// The path will contain a small margin/padding space.
-    ///
     private func ovalPath(in rect: CGRect) -> UIBezierPath {
         
         // To add a little margin/padding
@@ -340,10 +314,8 @@ class CardView: UIView {
         return UIBezierPath(ovalIn: rectWithMargin)
     }
     
-    ///
     /// Get UIBezierPath for a "squiggle" shape that fits inside the given rect.
     /// The path will contain a small margin/padding space.
-    ///
     private func squigglePath(in rect: CGRect) -> UIBezierPath {
         
         let margin = min(rect.size.width, rect.size.height) * shapeMargin
@@ -389,9 +361,7 @@ class CardView: UIView {
         return path
     }
     
-    ///
     /// Get a stroke UIColor for the given `Color`
-    ///
     private func strokeColor(for color: Color) -> UIColor {
         switch color {
         case .green: return #colorLiteral(red: 0, green: 0.5603182912, blue: 0, alpha: 1)
@@ -400,9 +370,7 @@ class CardView: UIView {
         }
     }
     
-    ///
     /// Get a fill UIColor for the given Shade/Color combination.
-    ///
     private func fillColor(for color: Color, with shade: Shade) -> UIColor {
         
         // The shade color depends on the stroke color, it just changes in transparency based on

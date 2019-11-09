@@ -31,9 +31,7 @@ struct Card : Hashable {
         self.property3 = property3
         self.property4 = property4
     }
-    
-    // Assignment 2 (Task #13): "13.Use an enum as a meaningful part of your solution."
-    
+
     /// Each feature might contain one of three different states.
     ///
     /// These states are completely generic and not tied to any specific ones.
@@ -56,9 +54,9 @@ extension Card: Equatable {
     static func ==(lhs: Card, rhs: Card) -> Bool {
         return (
             (lhs.property1 == rhs.property1) &&
-                (lhs.property2 == rhs.property2) &&
-                (lhs.property3 == rhs.property3) &&
-                (lhs.property4 == rhs.property4)
+            (lhs.property2 == rhs.property2) &&
+            (lhs.property3 == rhs.property3) &&
+            (lhs.property4 == rhs.property4)
         )
     }
 }
