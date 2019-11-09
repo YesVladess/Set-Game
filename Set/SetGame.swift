@@ -34,7 +34,7 @@ import Foundation
 struct SetGame {
     
     /// Keeps track of the current score
-    private(set) var score : Int = 0 // Assignment 2 (Task #16): "Keep a score"
+    private(set) var score : Int = 0
     
     /// Create a new set game with no initial cards.
     init() {
@@ -65,11 +65,9 @@ struct SetGame {
     ///
     private(set) var hand = Set<Card>()
     
-    ///
     /// Draw `n` number of random cards from the `deck`, and place them into the `hand` list.
     ///
     /// Returns the cards that were opened.
-    ///
     @discardableResult
     mutating func draw(n: Int) -> Set<Card> {
         
@@ -89,6 +87,21 @@ struct SetGame {
             hand.insert(card)
         }
         return newCards
+    }
+    
+    mutating func reDraw(n: Int) {
+        var reDrawnCards = Set<Card>()
+        for _ in 1...n {
+            if let reDrawnCard = hand.removeRandomElement() {
+                reDrawnCards.insert(reDrawnCard)
+            }
+            else {
+                break // no more cards in the deck
+            }
+        }
+        for card in reDrawnCards {
+            hand.insert(card)
+        }
     }
     
     /// Compute score
@@ -112,26 +125,21 @@ struct SetGame {
     /// - Given cards must exist in the `hand` list.
     /// - If cards are a valid match/set, they will be removed from the `openCards` list.
     mutating func evaluateSet(_ card1: Card, _ card2: Card, _ card3: Card) -> Bool {
-        
         // Make sure given cards are actually open
         if !hand.contains(card1) || !hand.contains(card2) || !hand.contains(card3) {
             assertionFailure(("evaluateSet() -> Given cards are not in play"))
         }
-        
         // Evaluate whether or not all variants are ALL-EQUAL or ALL-DIFFERENT.
         func evaluate(_ s1: Card.State, _ s2: Card.State, _ s3: Card.State) -> Bool {
             return (s1==s2 && s1==s3) || ((s1 != s2) && (s1 != s3) && (s2 != s3))
         }
-        
         // Evaluate each property.
         let property1 = evaluate(card1.property1, card2.property1, card3.property1)
         let property2 = evaluate(card1.property2, card2.property2, card3.property2)
         let property3 = evaluate(card1.property3, card2.property3, card3.property3)
         let property4 = evaluate(card1.property4, card2.property4, card3.property4)
-        
         // Whether or not the given cards are a valid set
         let isSet = (property1 && property2 && property3 && property4)
-        
         // If cards were a valid set, remove them from the openCards list
         if isSet {
             if let index = hand.firstIndex(of: card1) {
@@ -155,8 +163,6 @@ struct SetGame {
     }
 }
 
-// Assignment 2 (Task #14): "Add a sensible extension to some data structure"
-// Extension for simple but useful utilities
 extension Set {
 
     /// Remove (and return) a random element from self.
