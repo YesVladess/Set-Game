@@ -11,7 +11,7 @@ import UIKit
 ///
 /// Main view controller for a Set game.
 ///
-class SetViewController: UIViewController {
+final class SetViewController: UIViewController {
     
     // MARK: IBOutlets
     
@@ -272,6 +272,19 @@ class SetViewController: UIViewController {
         return (rows, columns)
     }
     
+    // MARK: Gesture Recognizers
+    
+    /// Add all gesture recognizers that a card must handle:
+    ///    - Tap: Select/deselect card
+    private func addCardGestureRecognizers(_ cardView: CardView) {
+        tapGesture(cardView)
+    }
+    
+    private func addBoardViewGestureRecognizers(_ boardView: UIView) {
+        swipeDownGesture(boardView)
+        rotationGesture(boardView)
+    }
+    
     // MARK: Gestures
     
     private func swipeDownGesture(_ sender: AnyObject) {
@@ -292,19 +305,6 @@ class SetViewController: UIViewController {
         let rotationRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(handleRotationWithReshuffle(recognizer:)))
         rotationRecognizer.rotation = CGFloat(1.15)
         sender.addGestureRecognizer(rotationRecognizer)
-    }
-    
-    // MARK: Gesture Recognizers
-    
-    /// Add all gesture recognizers that a card must handle:
-    ///    - Tap: Select/deselect card
-    private func addCardGestureRecognizers(_ cardView: CardView) {
-        tapGesture(cardView)
-    }
-    
-    private func addBoardViewGestureRecognizers(_ boardView: UIView) {
-        swipeDownGesture(boardView)
-        rotationGesture(boardView)
     }
     
     // MARK: Gesture handlers
