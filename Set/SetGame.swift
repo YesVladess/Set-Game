@@ -105,8 +105,8 @@ struct SetGame {
     }
     
     /// Compute score
-    mutating func computeScore(itIsSet: Bool, foundTime interval: TimeInterval) {
-        if itIsSet {
+    mutating func computeScore(isItSet: Bool, foundTime interval: TimeInterval) {
+        if isItSet {
             print("You find a set after \(interval) seconds")
             var scoreModifier = Double(interval/2)
             scoreModifier.round()

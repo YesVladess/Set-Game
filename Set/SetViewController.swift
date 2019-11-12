@@ -207,7 +207,7 @@ final class SetViewController: UIViewController {
             else { mismatch(selectedCards) }
             // Update score and timer accordingly
             let interval = currentTime.timeIntervalSince(timer!)
-            game.computeScore(itIsSet: isSet, foundTime: interval)
+            game.computeScore(isItSet: isSet, foundTime: interval)
             updateScoreLabel()
             timer = currentTime
             // Keep UI in sync with the model
