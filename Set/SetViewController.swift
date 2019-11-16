@@ -151,7 +151,6 @@ final class SetViewController: UIViewController {
     /// Returns a `Grid` object based on the current number of cards present
     /// in the board
     private func gridForCurrentBoard() -> Grid? {
-        // The number of rows and columns we want
         let (rows, columns) = getRowsAndColumns(numberOfCards: board.count)
         // We need at list 1x1 grid to have a valid grid
         guard rows>0, columns>0 else { return nil }
@@ -163,27 +162,21 @@ final class SetViewController: UIViewController {
     private func getCardView(for card: Card) -> CardView {
         // The view to populate/return
         let cardView = CardView(frame: CGRect())
-        // Color
         switch card.property1 {
             case .s1: cardView.color = .red
             case .s2: cardView.color = .purple
             case .s3: cardView.color = .green
         }
-        // Shade
         switch card.property2 {
             case .s1: cardView.shade = .solid
             case .s2: cardView.shade = .striped
             case .s3: cardView.shade = .unfilled
         }
-        
-        // Shape
         switch card.property3 {
             case .s1: cardView.shape = .oval
             case .s2: cardView.shape = .diamond
             case .s3: cardView.shape = .squiggle
         }
-        
-        // Number of elements in the card
         switch card.property4 {
             case .s1: cardView.elementsNumber = .one
             case .s2: cardView.elementsNumber = .two
@@ -274,8 +267,6 @@ final class SetViewController: UIViewController {
     
     // MARK: Gesture Recognizers
     
-    /// Add all gesture recognizers that a card must handle:
-    ///    - Tap: Select/deselect card
     private func addCardGestureRecognizers(_ cardView: CardView) {
         tapGesture(cardView)
     }
@@ -321,7 +312,7 @@ final class SetViewController: UIViewController {
         updateUI()
     }
     
-    /// What to do when the user taps on a card
+    /// When the user tap on a card
     @objc private func tapCard( recognizer: UITapGestureRecognizer) {
         print("tap gesture is detected")
         // Make sure the gesture was successful
@@ -339,15 +330,9 @@ final class SetViewController: UIViewController {
     }
     
     @objc private func handleRotationWithReshuffle( recognizer: UIRotationGestureRecognizer) {
-        //print("rotation gesture is detected")
-        if recognizer.state == .began {
-            print("begin")
-            return
-        } else if recognizer.state == .changed {
-            return
-        } else if recognizer.state == .ended {
-            print("end")
-        }
+        if recognizer.state == .began { print("begin"); return }
+        else if recognizer.state == .changed { return }
+        else if recognizer.state == .ended { print("end") }
         boardView.subviews.forEach { $0.removeFromSuperview() }
         board = [:]
         cleanupBoard()
@@ -364,47 +349,25 @@ fileprivate extension CardView {
     ///    - A "matched" card will show in a "green/success" accent/highlight color.
     ///    - A "mismatched" card will show in a "red/failed" accent/highlight color.
     ///    - A "regular" card will show with no accent/highlight color.
-    enum CardState {
-        // Regular state (i.e. when starting a game)
-        case regular
-        // Matched state (the card was correclty selected as part of a valid set)
-        case matched
-        // Mismatched state (the card was incorreclty selected as part of a set)
-        case mismatched
-    }
+    enum CardState { case regular, matched, mismatched }
     
-    /// The current state of the card
     var cardState: CardState {
         
         get {
-            // Mismatch
-            if layer.borderColor == #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1).cgColor {
-                return .mismatched
-            }
-                // Match
-            else if layer.borderColor == #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1).cgColor {
-                return .matched
-            }
-                // Regular
-            else {
-                return .regular
-            }
+            if layer.borderColor == #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1).cgColor { return .mismatched }
+            else if layer.borderColor == #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1).cgColor { return .matched }
+            else { return .regular }
         }
         
         set {
             switch newValue {
                 
-            // Regular state (no accent color)
             case .regular:
                 layer.borderWidth = 0.0
                 layer.borderColor = UIColor.clear.cgColor
-                
-            // Matched state (green/success color)
             case .matched:
                 layer.borderWidth = bounds.width * 0.1
                 layer.borderColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1).cgColor
-                
-            // Mismatched state (red/fail color)
             case .mismatched:
                 layer.borderWidth = bounds.width * 0.1
                 layer.borderColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1).cgColor
