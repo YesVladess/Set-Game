@@ -23,6 +23,8 @@ final class SetViewController: UIViewController {
     /// UILabel showing the current score
     @IBOutlet private weak var scoreLabel: UILabel!
     
+    @IBOutlet weak var deckImageView: UIImageView!
+    
     // MARK: IBActions
     
     /// What to do when user presses "New Game"
@@ -32,7 +34,6 @@ final class SetViewController: UIViewController {
     
     /// What to do when user presses "Deal"
     @IBAction private func pressDealButton() {
-        cleanupBoard()
         game.draw(n: 3)
         updateUI()
     }
@@ -129,21 +130,31 @@ final class SetViewController: UIViewController {
     
     /// Update the cardViews from the boardView
     private func updateBoardView() {
+        
         // We need a grid to display cards on screen
         guard let grid = gridForCurrentBoard() else { return }
-        // Update each cardView
+        
         for (i, card) in board.enumerated() {
-            // Get a frame to place the cardView
+
             if let cardFrame = grid[i] {
+                
                 let cardView = card.value
                 // Add a little margin to have spacing between cards
                 let margin = min(cardFrame.width, cardFrame.height) * 0.05
-                cardView.frame = cardFrame.insetBy(dx: margin, dy: margin)
-                // If the cardView hasn't been added to the boardView, add it
-                // (i.e. when new cards have been recently dealt/opened)
                 if !boardView.subviews.contains(cardView) {
+                    
                     boardView.addSubview(cardView)
+                    cardView.frame = CGRect(x: boardView.frame.minX, y: boardView.frame.maxY, width: 0, height: 0)
                 }
+                
+                UIViewPropertyAnimator.runningPropertyAnimator(
+                    withDuration: 1.5,
+                    delay: 0,
+                    options: .curveEaseOut,
+                    animations: {
+                        cardView.frame = cardFrame.insetBy(dx: margin, dy: margin)
+                }
+                )
             }
         }
     }
@@ -153,7 +164,7 @@ final class SetViewController: UIViewController {
     private func gridForCurrentBoard() -> Grid? {
         let (rows, columns) = getRowsAndColumns(numberOfCards: board.count)
         // We need at list 1x1 grid to have a valid grid
-        guard rows>0, columns>0 else { return nil }
+        guard rows > 0, columns > 0 else { return nil }
         return Grid(layout: .dimensions(rowCount: rows, columnCount: columns), frame: boardView.bounds)
     }
     
@@ -187,12 +198,9 @@ final class SetViewController: UIViewController {
     }
 
     /// Process the current board's state:
-    ///    - Cleanup board (remove matched cards from board, de-highlight unmatched cards)
     ///    - If there are three cards selected, process them (i.e. check for match/mismatch)
     private func processBoard() {
-        // Cleanup the board (i.e. remove any matched cards or de-highlight unmatched ones)
-        cleanupBoard()
-        // If there are three selected cards on the board, see if they match or not
+        
         if selectedCards.count == 3 {
             // Check if selected cards are a set
             let isSet = game.evaluateSet(selectedCards[0], selectedCards[1], selectedCards[2])
@@ -203,42 +211,35 @@ final class SetViewController: UIViewController {
             game.computeScore(isItSet: isSet, foundTime: interval)
             updateScoreLabel()
             timer = currentTime
-            // Keep UI in sync with the model
-            updateUI()
         }
     }
     
-    /// Cleanup the board
-    private func cleanupBoard() {
+    /// If the game doesn't contain the card, we need to remove it from the boardView.
+    private func removeFromBoard(_ card: Card, _ cardView: CardView) {
         
-        // Process each card/cardView in the board
-        for (card, cardView) in board {
-            // If the game doesn't contain the card, we need to remove it from the boardView.
-            // This happends when the card is part of a currently highlighed set that was matched
-            // on the previous turn.
-            if !game.hand.contains(card) {
-                // Remove value from board
                 board.removeValue(forKey: card)
-                // Remove cardView from superView
                 cardView.removeFromSuperview()
-                // We just removed a cardView from the superView, update UI!
                 updateUI()
-            }
-            // Set card to be in "regular" state (i.e. not mathced/mismatched)
-            // (matched ones shoud no longer be on screen, but mismatched ones should,
-            // and we want to "reset" them to a regular state)
-            cardView.cardState = .regular
-        }
     }
     
     /// Process the given cards as "matched". This means:
     ///    - Deselect card
     ///    - Set it into a "matched" state (i.e. green/success highlight color).
+    ///    - Make it fade away
     private func match(_ cards: [Card]) {
         for card in cards {
             if let cardView = board[card] {
                 cardView.isSelected = false
                 cardView.cardState = .matched
+                UIViewPropertyAnimator.runningPropertyAnimator(
+                    withDuration: 2.0,
+                    delay: 0,
+                    options: [],
+                    animations: { cardView.alpha = 0 },
+                    completion: { (finalPosition) in
+                        self.removeFromBoard(card, cardView)
+                }
+                )
             }
         }
     }
@@ -251,6 +252,26 @@ final class SetViewController: UIViewController {
             if let cardView = board[card] {
                 cardView.isSelected = false
                 cardView.cardState = .mismatched
+                
+                // Trying CA Basic Animation
+                let colorAnimation = CABasicAnimation(keyPath: "borderColor")
+                colorAnimation.fromValue = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1).cgColor
+                colorAnimation.toValue = UIColor.clear.cgColor
+                //colorAnimation.duration = 0.8
+                cardView.layer.borderColor = UIColor.clear.cgColor
+
+                let widthAnimation = CABasicAnimation(keyPath: "borderWidth")
+                widthAnimation.fromValue = cardView.bounds.width * 0.1
+                widthAnimation.toValue = 0.0
+                //widthAnimation.duration = 0.8
+                cardView.layer.borderWidth = 0.0
+
+                let bothAnimations = CAAnimationGroup()
+                bothAnimations.duration = 2
+                bothAnimations.animations = [colorAnimation, widthAnimation]
+                bothAnimations.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
+
+                cardView.layer.add(bothAnimations, forKey: "color and width")
             }
         }
     }
@@ -302,19 +323,18 @@ final class SetViewController: UIViewController {
     
     /// Deal new cards
     @objc private func swipeToDealCards( recognizer: UISwipeGestureRecognizer) {
-        print("swipe gesture is detected")
+        
         guard recognizer.state == .ended else {
             print("Swipe gesture cancelled/failed")
             return
         }
-        cleanupBoard()
         game.draw(n: 3)
         updateUI()
     }
     
     /// When the user tap on a card
     @objc private func tapCard( recognizer: UITapGestureRecognizer) {
-        print("tap gesture is detected")
+        
         // Make sure the gesture was successful
         guard recognizer.state == .ended else {
             print("Tap gesture cancelled/failed")
@@ -330,12 +350,12 @@ final class SetViewController: UIViewController {
     }
     
     @objc private func handleRotationWithReshuffle( recognizer: UIRotationGestureRecognizer) {
-        if recognizer.state == .began { print("begin"); return }
-        else if recognizer.state == .changed { return }
-        else if recognizer.state == .ended { print("end") }
+        
+//        if recognizer.state == .began { print("begin"); return }
+//        else if recognizer.state == .changed { return }
+//        else if recognizer.state == .ended { print("end") }
         boardView.subviews.forEach { $0.removeFromSuperview() }
         board = [:]
-        cleanupBoard()
         game.reDraw(n: game.hand.count)
         updateUI()
     }

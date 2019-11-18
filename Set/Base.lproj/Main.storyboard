@@ -3,7 +3,7 @@
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -20,8 +20,11 @@
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="4zw-f1-1OR">
                                 <rect key="frame" x="16" y="617" width="343" height="30"/>
                                 <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="folder.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="4B3-CT-IEq">
+                                        <rect key="frame" x="0.0" y="1" width="80" height="27.5"/>
+                                    </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hyx-fJ-GNv">
-                                        <rect key="frame" x="0.0" y="0.0" width="109" height="30"/>
+                                        <rect key="frame" x="88" y="0.0" width="79.5" height="30"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <state key="normal" title="Deal"/>
                                         <connections>
@@ -29,15 +32,15 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fdo-mZ-DWa">
-                                        <rect key="frame" x="117" y="0.0" width="109" height="30"/>
+                                        <rect key="frame" x="175.5" y="0.0" width="80" height="30"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <state key="normal" title="New Game"/>
                                         <connections>
                                             <action selector="newGameButtonPressed" destination="NZH-rD-zYE" eventType="touchUpInside" id="P37-ya-wrd"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6n6-vK-ZUw">
-                                        <rect key="frame" x="234" y="0.0" width="109" height="30"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1" verticalHuggingPriority="251" text="Score: 0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="6n6-vK-ZUw">
+                                        <rect key="frame" x="263.5" y="0.0" width="79.5" height="30"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -63,6 +66,7 @@
                     </view>
                     <connections>
                         <outlet property="boardView" destination="HFq-Lu-a0y" id="WN4-9Z-qV6"/>
+                        <outlet property="deckImageView" destination="4B3-CT-IEq" id="EAe-fo-cDh"/>
                         <outlet property="scoreLabel" destination="6n6-vK-ZUw" id="GnK-pX-27Q"/>
                     </connections>
                 </viewController>
@@ -71,4 +75,7 @@
             <point key="canvasLocation" x="941.60000000000002" y="133.5832083958021"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="folder.fill" catalog="system" width="64" height="46"/>
+    </resources>
 </document>
