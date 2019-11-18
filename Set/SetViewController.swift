@@ -148,7 +148,7 @@ final class SetViewController: UIViewController {
                 }
                 
                 UIViewPropertyAnimator.runningPropertyAnimator(
-                    withDuration: 1.5,
+                    withDuration: 0.5,
                     delay: 0,
                     options: .curveEaseOut,
                     animations: {
@@ -232,7 +232,7 @@ final class SetViewController: UIViewController {
                 cardView.isSelected = false
                 cardView.cardState = .matched
                 UIViewPropertyAnimator.runningPropertyAnimator(
-                    withDuration: 2.0,
+                    withDuration: 1,
                     delay: 0,
                     options: [],
                     animations: { cardView.alpha = 0 },
