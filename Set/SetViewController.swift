@@ -257,13 +257,11 @@ final class SetViewController: UIViewController {
                 let colorAnimation = CABasicAnimation(keyPath: "borderColor")
                 colorAnimation.fromValue = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1).cgColor
                 colorAnimation.toValue = UIColor.clear.cgColor
-                //colorAnimation.duration = 0.8
                 cardView.layer.borderColor = UIColor.clear.cgColor
 
                 let widthAnimation = CABasicAnimation(keyPath: "borderWidth")
                 widthAnimation.fromValue = cardView.bounds.width * 0.1
                 widthAnimation.toValue = 0.0
-                //widthAnimation.duration = 0.8
                 cardView.layer.borderWidth = 0.0
 
                 let bothAnimations = CAAnimationGroup()
